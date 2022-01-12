@@ -4,6 +4,7 @@ module.exports = {
   mode: "production",
   entry: undefined,
   output: undefined,
+  resolve: undefined,
   externals: undefined,
   module: {
     rules: [

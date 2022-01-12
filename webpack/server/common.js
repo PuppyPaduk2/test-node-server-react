@@ -13,6 +13,14 @@ config.output = {
   filename: "[name].js",
 };
 
+config.resolve = {
+  extensions: [".tsx", ".ts", ".js"],
+  modules: [
+    path.resolve(process.cwd(), "./src/server"),
+    path.resolve(process.cwd(), "./node_modules"),
+  ],
+};
+
 config.externals = {
   http: "commonjs2 http",
 };

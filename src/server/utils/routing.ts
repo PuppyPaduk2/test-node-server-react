@@ -16,8 +16,8 @@ export type Route = {
 export type InnerRoute = {
   path: string;
   match: MatchFunction;
-  GET: Handler;
-  POST: Handler;
+  get: Handler;
+  post: Handler;
 };
 
 export type Config = {
@@ -30,14 +30,14 @@ export function createRouting(config: Config = {}) {
   const innerRoutes = routes.map<InnerRoute>((item) => ({
     path: item.path,
     match: match(item.path, { decode: decodeURIComponent }),
-    GET: item.get ?? _notFound,
-    POST: item.post ?? _notFound,
+    get: item.get ?? _notFound,
+    post: item.post ?? _notFound,
   }));
   const notFound = config.notFound ?? _notFound;
 
   return (req: IncomingMessage, res: ServerResponse) => {
     const { route, params } = _matchRoute(innerRoutes, req);
-    const handler: Handler | null = route ? route[req.method] : null;
+    const handler: Handler | null = route ? route[req.method.toLocaleLowerCase()] : null;
 
     if (handler) {
       handler(req, res, { params });

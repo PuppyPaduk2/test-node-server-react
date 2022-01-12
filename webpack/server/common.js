@@ -1,4 +1,5 @@
 const path = require("path");
+const CopyPlugin = require("copy-webpack-plugin");
 const config = require("../common");
 
 config.target = "node";
@@ -22,6 +23,21 @@ config.resolve = {
 
 config.externals = {
   http: "commonjs2 http",
+  path: "commonjs2 path",
+  fs: "commonjs2 fs",
+  "path-to-regexp": "commonjs2 path-to-regexp",
+  "mime-types": "commonjs2 mime-types",
 };
+
+config.plugins.push(
+  new CopyPlugin({
+    patterns: [
+      {
+        from: path.resolve(__dirname, "../../src/public"),
+        to: path.resolve(__dirname, "../../dist/public"),
+      },
+    ],
+  })
+);
 
 module.exports = config;

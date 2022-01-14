@@ -1,6 +1,6 @@
 const path = require("path");
 
-module.exports = {
+module.exports = () => ({
   mode: "production",
   entry: undefined,
   output: undefined,
@@ -21,4 +21,11 @@ module.exports = {
     ],
   },
   plugins: [],
-};
+  optimization: {
+    moduleIds: "named",
+    chunkIds: "named",
+    splitChunks: {
+      chunks: "all",
+    },
+  },
+});

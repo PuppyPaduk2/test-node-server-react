@@ -1,11 +1,12 @@
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const config = require("../common");
+const LoadablePlugin = require("@loadable/webpack-plugin");
+const config = require("../common")();
 
 config.target = "node";
 
 config.entry = {
-  index: "./src/server/index.ts",
+  index: "./src/server/index",
 };
 
 config.output = {
@@ -30,6 +31,7 @@ config.externals = {
 };
 
 config.plugins.push(
+  new LoadablePlugin(),
   new CopyPlugin({
     patterns: [
       {

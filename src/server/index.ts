@@ -1,29 +1,46 @@
 import { createServer } from "http";
-import { readFileSync } from "fs";
-import { resolve as resolvePath } from "path";
 import { lookup as lookupMime } from "mime-types";
 import { createRouting } from "./utils/routing";
+import { indexHtml, render } from "./utils/render";
+import { readStatic } from "./utils/read-static";
 
 const port = 3000;
-
-const indexHtml = readFileSync(resolvePath(__dirname, "../public/index.html")).toString();
 
 const routing = createRouting({
   routes: [
     {
-      path: "/static/(.*)",
-      get: (_, res, { params }) => {
-        console.log(params);
-        res.end();
+      path: "/client/(.*)",
+      get: (req, res, { params }) => {
+        // console.log(params);
+
+        // console.log(__dirname)
+
+        const contentType = lookupMime(req.url);
+
+        res.writeHead(200, {
+          "Cache-Control": "public, max-age=31536000",
+          "Content-Type":  typeof contentType === "string" ? contentType : "text/html",
+        });
+        readStatic(params[0]).pipe(res);
+        // res.end();
       },
     },
-  ],
-  notFound: (req, res) => {
-    const contentType = lookupMime(req.url);
+    {
+      path: "(.*)",
+      get: (_, res) => {
+        res.writeHead(200, {
+          "Cache-Control": "public, max-age=31536000",
+          "Content-Type": "text/html",
+        });
 
+        render().pipe(res);
+      },
+    }
+  ],
+  notFound: (_, res) => {
     res.writeHead(404, {
       "Cache-Control": "public, max-age=31536000",
-      "Content-Type":  typeof contentType === "string" ? contentType : "text/html",
+      "Content-Type": "text/html",
     });
     res.end(indexHtml.replace("{{content}}", "Not Found"));
   },

@@ -1,12 +1,12 @@
 import { createServer } from "http";
 import { lookup as lookupMime } from "mime-types";
-import { createRouting, Handler } from "./utils/routing";
+import { createUrlHandler, PathHandler } from "./utils/url-handler";
 import { indexHtml, render } from "./utils/render";
 import { readStatic } from "./utils/read-static";
 
 const port = 3000;
 
-const notFound: Handler = (_, res) => {
+const notFound: PathHandler = (_, res) => {
   res.writeHead(404, {
     "Cache-Control": "public, max-age=31536000",
     "Content-Type": "text/html",
@@ -14,14 +14,14 @@ const notFound: Handler = (_, res) => {
   res.end(indexHtml.replace("{{content}}", "Not Found"));
 };
 
-const routing = createRouting({
-  routes: [
+const routing = createUrlHandler({
+  paths: [
     {
-      path: "/favicon.ico",
+      url: "/favicon.ico",
       get: notFound,
     },
     {
-      path: "/client/(.*)",
+      url: "/client/(.*)",
       get: (req, res, { params }) => {
         const contentType = lookupMime(req.url);
 
@@ -33,11 +33,11 @@ const routing = createRouting({
       },
     },
     {
-      path: "/api/(.*)",
-      get: createRouting({
-        routes: [
+      url: "/api/(.*)",
+      get: createUrlHandler({
+        paths: [
           {
-            path: "/api/menu",
+            url: "/api/menu",
             get: (_, res) => {
               res.end(JSON.stringify([{ title: "Home" }, { title: "Sign in" }, { title: "Sign up" }]))
             },
@@ -47,7 +47,7 @@ const routing = createRouting({
       }),
     },
     {
-      path: "(.*)",
+      url: "(.*)",
       get: (_, res) => {
         res.writeHead(200, {
           "Cache-Control": "public, max-age=31536000",

@@ -2,8 +2,8 @@ import React from "react";
 import { loadableReady } from '@loadable/component';
 import { hydrate } from "react-dom";
 import { App } from "./app";
-import { createRequestState } from "./requests-state";
-import { createInitialState } from "./initial-state";
+import { createRequestState } from "./utils/requests-state";
+import { createInitialState } from "./utils/initial-state";
 declare global {
   interface Window { initialState: object; }
 }

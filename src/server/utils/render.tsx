@@ -1,10 +1,12 @@
 import React from "react";
-import { renderToNodeStream } from 'react-dom/server';
+import { renderToString, renderToNodeStream } from 'react-dom/server';
 import { Readable } from "stream";
 import { resolve as resolvePath } from "path";
 import { readFileSync } from "fs";
 import { ChunkExtractor } from "@loadable/server";
 import { App } from "../../client/app";
+import { createRequestState } from "../../client/utils/requests-state";
+import { createInitialState } from "../../client/utils/initial-state";
 
 export const indexHtml = readFileSync(resolvePath(__dirname, "../public/index.html")).toString();
 
@@ -26,24 +28,43 @@ export function render() {
   });
 
   const webExtractor = new ChunkExtractor({ statsFile: clientStats, entrypoints: ["index"] });
-  const jsx = webExtractor.collectChunks(<App />);
+  const requestsState = createRequestState();
+  const initialState = createInitialState();
+  const jsx = webExtractor.collectChunks(
+    <App
+      requestState={requestsState}
+      initialState={initialState}
+    />
+  );
 
-  const renderStream = renderToNodeStream(jsx);
+  renderToString(jsx);
+  requestsState.promise.then(() => {
+    const jsx = webExtractor.collectChunks(
+      <App
+        requestState={requestsState}
+        initialState={initialState}
+      />
+    );
+    const renderStream = renderToNodeStream(jsx);
+    const initialStateString = JSON.stringify(Object.fromEntries(Array.from(initialState)))
+      .replace(/</g, '\\u003c');
 
-  stream.push(beforeHead);
-  stream.push(webExtractor.getStyleTags());
-  stream.push(webExtractor.getLinkTags());
-  stream.push(beforeContent);
-
-  renderStream.on("data", (data) => stream.push(data));
-  renderStream.on("end", () => {
-    // console.log(webExtractor.getScriptTags());
-    // console.log(webExtractor.getLinkTags());
-    // console.log(webExtractor.getStyleTags());
-    stream.push(beforeFooter);
-    stream.push(webExtractor.getScriptTags());
-    stream.push(afterFooter);
-    stream.push(null);
+    stream.push(beforeHead);
+    stream.push(webExtractor.getStyleTags());
+    stream.push(webExtractor.getLinkTags());
+    stream.push(`<script>window.initialState=${initialStateString}</script>`);
+    stream.push(beforeContent);
+  
+    renderStream.on("data", (data) => stream.push(data));
+    renderStream.on("end", () => {
+      // console.log(webExtractor.getScriptTags());
+      // console.log(webExtractor.getLinkTags());
+      // console.log(webExtractor.getStyleTags());
+      stream.push(beforeFooter);
+      stream.push(webExtractor.getScriptTags());
+      stream.push(afterFooter);
+      stream.push(null);
+    });
   });
 
   return stream;

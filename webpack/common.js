@@ -1,4 +1,5 @@
 const path = require("path");
+const { DefinePlugin } = require("webpack");
 
 module.exports = () => ({
   mode: "production",
@@ -20,7 +21,11 @@ module.exports = () => ({
       },
     ],
   },
-  plugins: [],
+  plugins: [
+    new DefinePlugin({
+      __APP_URL__: JSON.stringify("http://localhost:3000"),
+    }),
+  ],
   optimization: {
     moduleIds: "named",
     chunkIds: "named",

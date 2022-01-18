@@ -1,35 +1,28 @@
-import { Dispatch, SetStateAction, useCallback, useContext, useState } from "react";
+import { Dispatch, useCallback, useContext, useState } from "react";
 import { initialState } from "./initial-state";
+import { useInitialValue } from "./use-initial-value";
+import { getSide } from "./get-side";
 
 type UseStoreOptions = {
   key?: string;
 };
 
+const side = getSide();
+
 export function useStore<Value>(
   defaultValue: Value,
   options:  UseStoreOptions = {}
-): [Value, Dispatch<SetStateAction<Value>>] {
+): [Value, Dispatch<Value>] {
   const { key } = options;
   const initial = useContext(initialState);
-  const [value, setStateValue] = useState<Value>(
-    options.key ? initial.get(options.key) : defaultValue
-  );
-  const setState: Dispatch<SetStateAction<Value>> = useCallback((value) => {
-    setStateValue((prev) => {
-      let next: Value;
+  const initialValue = useInitialValue<Value>((value) => value ?? defaultValue, key);
+  const [value, setStateValue] = useState<Value>(initialValue);
+  const setState: Dispatch<Value> = useCallback((value) => {
+    setStateValue(value);
 
-      if (value instanceof Function) {
-        next = value(prev);
-      } else {
-        next = value;
-      }
-
-      if (key) {
-        initial.set(key, next);
-      }
-
-      return next;
-    });
+    if (side === "node" && key) {
+      initial.set(key, value);
+    }
   }, [key]);
 
   return [value, setState];

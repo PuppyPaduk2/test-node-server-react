@@ -1,5 +1,6 @@
 import React from "react";
 import { renderToString, renderToNodeStream } from 'react-dom/server';
+import { StaticRouter } from "react-router-dom/server";
 import { Readable } from "stream";
 import { resolve as resolvePath } from "path";
 import { readFileSync } from "fs";
@@ -22,30 +23,32 @@ const afterFooter = indexHtmlArray[1];
 
 const clientStats = resolvePath(process.cwd(), "./dist/client/loadable-stats.json");
 
-export function render() {
+export type Params = {
+  url?: string;
+};
+
+export function render(params: Params = {}) {
+  const { url = "" } = params;
+
   const stream = new Readable({
     read() {},
   });
 
   const webExtractor = new ChunkExtractor({ statsFile: clientStats, entrypoints: ["index"] });
   const requestsState = createRequestState();
-  const initialState = createInitialState();
-  const jsx = webExtractor.collectChunks(
+  const initialState = createInitialState({
+    location: url,
+  });
+  const collectChunks = () => webExtractor.collectChunks(
     <App
       requestState={requestsState}
       initialState={initialState}
     />
   );
 
-  renderToString(jsx);
+  renderToString(collectChunks());
   requestsState.promise.then(() => {
-    const jsx = webExtractor.collectChunks(
-      <App
-        requestState={requestsState}
-        initialState={initialState}
-      />
-    );
-    const renderStream = renderToNodeStream(jsx);
+    const renderStream = renderToNodeStream(collectChunks());
     const initialStateString = JSON.stringify(Object.fromEntries(Array.from(initialState)))
       .replace(/</g, '\\u003c');
 

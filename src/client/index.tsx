@@ -4,6 +4,7 @@ import { hydrate } from "react-dom";
 import { App } from "./app";
 import { createRequestState } from "./utils/requests-state";
 import { createInitialState } from "./utils/initial-state";
+// import { BrowserRouter } from "react-router-dom";
 declare global {
   interface Window { initialState: object; }
 }
@@ -14,10 +15,12 @@ loadableReady(() => {
 
   delete window.initialState;
   hydrate(
-    <App
-      initialState={createInitialState(initialState)}
-      requestState={createRequestState()}
-    />,
+    // <BrowserRouter basename="main/dashboard">
+      <App
+        initialState={createInitialState(initialState)}
+        requestState={createRequestState()}
+      />,
+    // </BrowserRouter>,
     root
   );
 });

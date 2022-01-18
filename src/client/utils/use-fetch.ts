@@ -1,29 +1,28 @@
-import { Dispatch, SetStateAction, useContext, useMemo } from "react";
+import { useCallback, useContext } from "react";
 import { requestsState } from "./requests-state";
-import { useIsNeedFirstRequest } from "./use-is-need-first-request";
 import { useStore } from "./use-store";
 
-type UseFetchOptions<Result> = {
+type Request<Result> = () => Promise<Result>;
+
+export type UseFetchOptions<Result> = {
   key?: string;
   defaultResult?: Result;
 };
 
 export function useFetch<Result>(
-  request: () => Promise<Result>,
+  request: Request<Result>,
   options: UseFetchOptions<Result> = {}
-): [Result, Dispatch<SetStateAction<Result>>] {
-  const { key } = options;
+): [Result, Request<Result>] {
+  const { key, defaultResult } = options;
   const requests = useContext(requestsState);
-  const [result, setResult] = useStore<Result>(options.defaultResult, { key });
-  const isNeedFirstRequest = useIsNeedFirstRequest(options.key).current;
+  const [result, setResult] = useStore<Result>(defaultResult, { key });
+  const requestWrapper: Request<Result> = useCallback(() => {
+    return requests.add(request()).then((data) => {
+      setResult(data);
 
-  useMemo(() => {
-    if (isNeedFirstRequest) {
-      requests.add(request()).then((data) => {
-        setResult(data);
-      });
-    }
-  }, []);
+      return data;
+    });
+  }, [result]);
 
-  return [result, setResult];
+  return [result, requestWrapper];
 }

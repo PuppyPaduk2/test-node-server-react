@@ -1,42 +1,56 @@
-import React, { memo, useState } from "react";
+import React, { memo, useContext, useEffect } from "react";
 import loadable from '@loadable/component'
 import { initialState, InitialState } from "./utils/initial-state";
 import { requestsState, RequestsState } from "./utils/requests-state";
+import { Route, Routes } from "react-router-dom";
+import { MainMenuService } from "./services/main-menu";
+import { CommonRouter } from "./utils/common-router";
 
 const InitialStateProvider = initialState.Provider;
 const RequestsStateProvider = requestsState.Provider;
 
-const LandingPage = loadable(() => import("./pages/landing"), {
-  fallback: <div>...loading</div>
-});
+const fallback = <div>...loading</div>;
 
-const SingInPage = loadable(() => import("./pages/sing-in"), {
-  fallback: <div>...loading</div>
-});
+const HomePage = loadable(() => import("./pages/home"), { fallback });
+
+const SingInPage = loadable(() => import("./pages/sing-in"), { fallback });
+
+const UsersService = loadable(() => import("./pages/users"), { fallback });
 
 type Props = {
   initialState: InitialState;
   requestState: RequestsState;
 };
 
-export const App = memo<Props>((props) => {
-  const [landing, setLanding] = useState<boolean>(false);
+const ContentWrapper = memo((props) => {
+  const { children } = props;
+  const initial = useContext(initialState);
 
+  useEffect(() => {
+    initial.clear();
+  }, []);
+
+  return <>{children}</>;
+});
+
+export const App = memo<Props>((props) => {
   return (
     <InitialStateProvider value={props.initialState}>
       <RequestsStateProvider value={props.requestState}>
-          <span>App</span>
-          <button onClick={() => setLanding(prev => !prev)}>change [{landing ? "true" : "false"}]</button>
-          {landing === false && (
-            <div>
-              <LandingPage />
-            </div>
-          )}
-          {landing === true && (
-            <div>
-              <SingInPage />
-            </div>
-          )}
+        <ContentWrapper>
+          <CommonRouter>
+            <MainMenuService />
+
+            <Routes>
+              <Route path="/">
+                <Route path="/" element={<HomePage />} />
+                <Route path="sign-in" element={<SingInPage />} />
+              </Route>
+              <Route path="/users/*" element={<UsersService />} />
+              <Route path="*" element={<>Not Found</>} />
+            </Routes>
+          </CommonRouter>
+        </ContentWrapper>
       </RequestsStateProvider>
     </InitialStateProvider>
   );

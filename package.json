@@ -2,16 +2,6 @@
   "name": "test-node-server-react",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build:server:dev": "npx webpack -c ./webpack/server/dev.js",
-    "start:server:dev": "npx webpack -c ./webpack/server/dev.js --watch",
-    "build:client:dev": "npx webpack -c ./webpack/client/dev.js",
-    "start:client:dev": "npx webpack -c ./webpack/client/dev.js --watch",
-    "build:dev": "npx webpack -c ./webpack/dev.js",
-    "start:dev": "npx webpack -c ./webpack/dev.js --watch"
-  },
   "author": "",
   "license": "ISC",
   "devDependencies": {

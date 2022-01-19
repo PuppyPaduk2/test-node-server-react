@@ -1,48 +1,41 @@
 const path = require("path");
-const CopyPlugin = require("copy-webpack-plugin");
-const LoadablePlugin = require("@loadable/webpack-plugin");
-const config = require("../common")();
+const { loadablePlugin, copyPlugin } = require("../plugins");
+const getConfig = require("../common");
 
-config.target = "node";
+module.exports = () => {
+  const config = getConfig();
 
-config.entry = {
-  index: path.resolve(process.cwd(), "./src/server/index"),
-};
+  config.target = "node";
 
-config.output = {
-  path: path.resolve(process.cwd(), "./dist/server"),
-  filename: "[name].js",
-};
+  config.entry = {
+    index: path.resolve(process.cwd(), "./src/server/index"),
+  };
 
-config.resolve = {
-  extensions: [".tsx", ".ts", ".js"],
-  modules: [
-    path.resolve(process.cwd(), "./src/server"),
-    path.resolve(process.cwd(), "./node_modules"),
-    path.resolve(process.cwd(), "../node_modules"),
-    path.resolve(process.cwd(), "../../node_modules"),
-  ],
-};
+  config.output = {
+    path: path.resolve(process.cwd(), "./dist/server"),
+    filename: "[name].js",
+  };
 
-// TODO Add all node_modules
-// config.externals = {
-//   http: "commonjs2 http",
-//   path: "commonjs2 path",
-//   fs: "commonjs2 fs",
-//   "path-to-regexp": "commonjs2 path-to-regexp",
-//   "mime-types": "commonjs2 mime-types",
-// };
-
-config.plugins.push(
-  new LoadablePlugin(),
-  new CopyPlugin({
-    patterns: [
-      {
-        from: path.resolve(process.cwd(), "./src/public"),
-        to: path.resolve(process.cwd(), "./dist/public"),
-      },
+  config.resolve = {
+    extensions: [".tsx", ".ts", ".js"],
+    modules: [
+      path.resolve(process.cwd(), "./src/server"),
+      path.resolve(process.cwd(), "./node_modules"),
+      path.resolve(process.cwd(), "../node_modules"),
+      path.resolve(process.cwd(), "../../node_modules"),
     ],
-  })
-);
+  };
 
-module.exports = config;
+  // TODO Add all node_modules
+  // config.externals = {
+  //   http: "commonjs2 http",
+  //   path: "commonjs2 path",
+  //   fs: "commonjs2 fs",
+  //   "path-to-regexp": "commonjs2 path-to-regexp",
+  //   "mime-types": "commonjs2 mime-types",
+  // };
+
+  config.plugins.push(loadablePlugin(), copyPlugin());
+
+  return config;
+};

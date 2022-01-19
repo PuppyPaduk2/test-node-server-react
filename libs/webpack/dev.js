@@ -1,4 +1,4 @@
-const clientConfig = require("./client/dev");
-const serverConfig = require("./server/dev");
+const getClientConfig = require("./client/dev");
+const getServerConfig = require("./server/dev");
 
-module.exports = [clientConfig, serverConfig];
+module.exports = () => [getClientConfig(), getServerConfig()];

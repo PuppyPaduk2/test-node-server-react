@@ -1,6 +1,10 @@
-const config = require("./common");
+const getConfig = require("./common");
 
-config.mode = "development";
-config.devtool = "source-map";
+module.exports = () => {
+  const config = getConfig();
 
-module.exports = config;
+  config.mode = "development";
+  config.devtool = "source-map";
+
+  return config;
+};

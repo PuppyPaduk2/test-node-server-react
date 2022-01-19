@@ -1,14 +1,18 @@
 const NodemonPlugin = require("nodemon-webpack-plugin");
-const config = require("./common");
+const getConfig = require("./common");
 
-config.mode = "development";
+module.exports = () => {
+  const config = getConfig();
 
-config.plugins.push(
-  new NodemonPlugin({
-    script: `./dist/server/index.js`,
-    watch: `./dist/server`,
-    ext: "js,njk,json,ts,tsx",
-  })
-);
+  config.mode = "development";
 
-module.exports = config;
+  config.plugins.push(
+    new NodemonPlugin({
+      script: `./dist/server/index.js`,
+      watch: `./dist/server`,
+      ext: "js,njk,json,ts,tsx",
+    })
+  );
+
+  return config;
+};

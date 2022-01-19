@@ -16,7 +16,7 @@ indexHtmlArray = indexHtmlArray[1].split("{{footer}}");
 const beforeFooter = indexHtmlArray[0];
 const afterFooter = indexHtmlArray[1];
 
-const statsFile = resolvePath(process.cwd(), "./dist/client/loadable-stats.json");
+const statsFile = resolvePath(process.cwd(), "./dist/client/core/loadable-stats.json");
 
 export const routing: PathHandler = (req, res) => {
   res.writeHead(200, {

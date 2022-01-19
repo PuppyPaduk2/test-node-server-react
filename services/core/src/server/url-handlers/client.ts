@@ -8,10 +8,15 @@ export const client: PathHandler = (req, res, { params }) => {
   const path = resolvePath(__dirname, "../client", params[0]);
   const stream = readStatic(path);
 
-  res.writeHead(200, {
-    "Cache-Control": "public, max-age=31536000",
-    "Content-Type":  typeof contentType === "string" ? contentType : "text/html",
-  });
-  stream.on("data", (chunk) => res.write(chunk));
-  stream.on("end", () => res.end());
+  if (stream) {
+    res.writeHead(200, {
+      "Cache-Control": "public, max-age=31536000",
+      "Content-Type":  typeof contentType === "string" ? contentType : "text/html",
+    });
+    stream.on("data", (chunk) => res.write(chunk));
+    stream.on("end", () => res.end());
+  } else {
+    res.statusCode = 404;
+    res.end();
+  }
 };

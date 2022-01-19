@@ -5,7 +5,11 @@ const config = require("../common")();
 config.target = "web";
 
 config.entry = {
-  index: path.resolve(process.cwd(), "./src/client/index"),
+  index: {
+    import: path.resolve(process.cwd(), "./src/client/index"),
+    // dependOn: ["react"],
+  },
+  react: ["react", "react-dom", "react-router-dom"],
 };
 
 config.output = {

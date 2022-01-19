@@ -27,6 +27,7 @@ module.exports = () => ({
     }),
   ],
   optimization: {
+    runtimeChunk: "single",
     moduleIds: "named",
     chunkIds: "named",
     splitChunks: {

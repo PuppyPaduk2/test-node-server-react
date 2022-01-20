@@ -1,6 +1,8 @@
-import { createUrlHandler, PathHandler } from "../../../../../libs/url-handler";
-import { notFound } from "./not-found";
-import { MenuItem } from "../../common/services/main-menu";
+import { createUrlHandler, PathHandler } from "../../../../libs/url-handler";
+import { MenuItem } from "../common/services/main-menu";
+import { urlHandlers } from "../../../../libs/infra-app/server";
+
+export const notFound = urlHandlers.createNotFoundHandler();
 
 export const api: PathHandler = createUrlHandler({
   paths: [

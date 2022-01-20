@@ -5,7 +5,7 @@ import { PathHandler } from "../../../../../libs/url-handler";
 
 export const client: PathHandler = (req, res, { params }) => {
   const contentType = lookupMime(req.url);
-  const path = resolvePath(__dirname, "../client", params[0]);
+  const path = resolvePath(__dirname, "../../../client", params[0]);
   const stream = readStatic(path);
 
   if (stream) {

@@ -4,7 +4,8 @@ import { renderApp } from "../../../../../libs/infra-app/server";
 import { PathHandler } from "../../../../../libs/url-handler";
 import { App } from "../../client/app";
 
-export const indexHtml = readFileSync(resolvePath(__dirname, "../public/index.html")).toString();
+const indexHtmlPath = resolvePath(__dirname, "../../../public/index.html");
+export const indexHtml = readFileSync(indexHtmlPath).toString();
 
 let indexHtmlArray = indexHtml.split("{{head}}");
 const beforeHead = indexHtmlArray[0];
@@ -16,7 +17,7 @@ indexHtmlArray = indexHtmlArray[1].split("{{footer}}");
 const beforeFooter = indexHtmlArray[0];
 const afterFooter = indexHtmlArray[1];
 
-const statsFile = resolvePath(process.cwd(), "./dist/client/core/loadable-stats.json");
+const statsFile = resolvePath(process.cwd(), "./dist/client/services/core/loadable-stats.json");
 
 export const routing: PathHandler = (req, res) => {
   res.writeHead(200, {
@@ -27,7 +28,7 @@ export const routing: PathHandler = (req, res) => {
   renderApp({
     location: req.url ?? "",
     html: { beforeHead, beforeContent, beforeFooter, afterFooter },
-    entryPoints: ["index"],
+    entryPoints: ["services/core/index"],
     App,
     statsFile,
   }).then((stream) => stream.pipe(res));

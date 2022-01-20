@@ -1,5 +1,5 @@
 const path = require("path");
-const { loadablePlugin, copyPlugin } = require("../plugins");
+const { copyPlugin } = require("../plugins");
 const getConfig = require("../common");
 
 module.exports = () => {
@@ -7,9 +7,9 @@ module.exports = () => {
 
   config.target = "node";
 
-  config.entry = {
-    index: path.resolve(process.cwd(), "./src/server/index"),
-  };
+  // config.entry = {
+  //   index: path.resolve(process.cwd(), "./src/server/index"),
+  // };
 
   config.output = {
     path: path.resolve(process.cwd(), "./dist/server"),
@@ -35,7 +35,7 @@ module.exports = () => {
   //   "mime-types": "commonjs2 mime-types",
   // };
 
-  config.plugins.push(loadablePlugin(), copyPlugin());
+  config.plugins.push(copyPlugin());
 
   return config;
 };

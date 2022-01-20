@@ -3,18 +3,22 @@ const LoadablePlugin = require("@loadable/webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const { resolve: pathResolve } = require("path");
 const { ModuleFederationPlugin } = require("webpack").container;
+const NodemonPlugin = require("nodemon-webpack-plugin");
 
 const resolvePathCwd = (path) => pathResolve(process.cwd(), path);
 
 module.exports = {
-  definePlugin: (options) =>
-    new DefinePlugin({
+  definePlugin: (options) => {
+    return new DefinePlugin({
       __APP_URL__: JSON.stringify("http://localhost:3000"),
       ...options,
-    }),
-  loadablePlugin: () => new LoadablePlugin(),
-  copyPlugin: (options) =>
-    new CopyPlugin({
+    });
+  },
+  loadablePlugin: (options) => {
+    return new LoadablePlugin(options);
+  },
+  copyPlugin: (options) => {
+    return new CopyPlugin({
       patterns: [
         {
           from: resolvePathCwd("./src/public"),
@@ -22,9 +26,10 @@ module.exports = {
         },
       ],
       ...options,
-    }),
-  moduleFederation: (options) =>
-    new ModuleFederationPlugin({
+    });
+  },
+  moduleFederation: (options) => {
+    return new ModuleFederationPlugin({
       // name: "core",
       filename: "remote.js",
       remotes: {},
@@ -37,5 +42,14 @@ module.exports = {
         },
       },
       ...options,
-    }),
+    });
+  },
+  nodemon: (options) => {
+    return new NodemonPlugin({
+      // script: `./dist/server/index.js`,
+      watch: `./dist/server`,
+      ext: "js,njk,json,ts,tsx",
+      ...options,
+    });
+  },
 };

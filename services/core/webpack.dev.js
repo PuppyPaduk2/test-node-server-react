@@ -1,22 +1,56 @@
-const { resolve: pathResolve } = require("path");
+const { resolve: resolvePath } = require("path");
 const getClientDevConfig = require("../../libs/webpack/client/dev");
+const { nodemon, loadablePlugin } = require("../../libs/webpack/plugins");
 const getServerDevConfig = require("../../libs/webpack/server/dev");
-const { moduleFederation } = require("../../libs/webpack/plugins");
 
-module.exports = () => {
-  const clientConfig = getClientDevConfig();
+const getClientConfig = () => {
+  const config = getClientDevConfig();
 
-  clientConfig.output.path = pathResolve(process.cwd(), "./dist/client/core");
-  clientConfig.output.publicPath = "/client/core/";
+  config.entry["services/core/index"] = {
+    import: resolvePath(process.cwd(), "./src/client/index"),
+  };
 
-  clientConfig.plugins.push(
-    moduleFederation({
-      name: "core",
-      exposes: {
-        "./App": "./src/client/app.tsx",
-      },
+  config.output.chunkFilename = (pathData) => {
+    return pathData.chunk.name === "main"
+      ? "[name].js"
+      : "services/core/[name].js";
+  };
+
+  config.plugins.push(
+    loadablePlugin({
+      filename: "./services/core/loadable-stats.json",
     })
   );
 
-  return [clientConfig, getServerDevConfig()];
+  return config;
 };
+
+const getServerConfig = () => {
+  const config = getServerDevConfig();
+
+  config.entry["services/core/index"] = {
+    import: resolvePath(process.cwd(), "./src/server/index"),
+  };
+
+  config.output.chunkFilename = (pathData) => {
+    return pathData.chunk.name === "main"
+      ? "[name].js"
+      : "services/core/[name].js";
+  };
+
+  config.plugins.push(
+    loadablePlugin({
+      filename: "./services/core/loadable-stats.json",
+    }),
+    nodemon({
+      script: resolvePath(
+        process.cwd(),
+        "./dist/server/services/core/index.js"
+      ),
+    })
+  );
+
+  return config;
+};
+
+module.exports = () => [getClientConfig(), getServerConfig()];

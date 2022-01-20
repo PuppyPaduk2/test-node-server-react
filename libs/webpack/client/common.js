@@ -1,5 +1,4 @@
 const path = require("path");
-const { loadablePlugin } = require("../plugins");
 const getConfig = require("../common");
 
 module.exports = () => {
@@ -7,18 +6,19 @@ module.exports = () => {
 
   config.target = "web";
 
-  config.entry = {
-    index: {
-      import: path.resolve(process.cwd(), "./src/client/index"),
-      // dependOn: ["react"],
-    },
-    // react: ["react", "react-dom", "react-router-dom"],
-  };
+  // config.entry = {
+  //   // index: {
+  //   //   import: path.resolve(process.cwd(), "./src/client/index"),
+  //   // },
+  //   react: {
+  //     import: ["react", "react-dom", "react-router-dom"],
+  //   },
+  // };
 
   config.output = {
     path: path.resolve(process.cwd(), "./dist/client"),
     filename: "[name].js",
-    // publicPath: "/client/",
+    publicPath: "/client/",
   };
 
   config.resolve = {
@@ -31,7 +31,7 @@ module.exports = () => {
     ],
   };
 
-  config.plugins.push(loadablePlugin());
+  // config.plugins.push(loadablePlugin());
 
   return config;
 };

@@ -3,7 +3,11 @@ const { definePlugin } = require("./plugins");
 
 module.exports = () => ({
   mode: "production",
-  entry: undefined,
+  entry: {
+    react: {
+      import: ["react", "react-dom", "react-router-dom"],
+    },
+  },
   output: undefined,
   resolve: undefined,
   externals: undefined,

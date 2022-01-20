@@ -9,10 +9,7 @@ const resolvePathCwd = (path) => pathResolve(process.cwd(), path);
 
 module.exports = {
   definePlugin: (options) => {
-    return new DefinePlugin({
-      __APP_URL__: JSON.stringify("http://localhost:3000"),
-      ...options,
-    });
+    return new DefinePlugin(options);
   },
   loadablePlugin: (options) => {
     return new LoadablePlugin(options);

@@ -25,7 +25,7 @@ module.exports = () => ({
       },
     ],
   },
-  plugins: [definePlugin()],
+  plugins: [],
   optimization: {
     runtimeChunk: "single",
     moduleIds: "named",

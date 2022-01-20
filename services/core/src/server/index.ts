@@ -11,7 +11,14 @@ const {
   createNotFoundHandler,
 } = urlHandlers;
 
-const port = 3000;
+declare const __SERVICE_HREF__: string;
+const SERVICE_HREF: string = __SERVICE_HREF__;
+
+declare const __SERVICE_PORT__: string;
+const SERVICE_PORT: string = __SERVICE_PORT__;
+
+declare const __SERVICE_NAME__: string;
+const SERVICE_NAME: string = __SERVICE_NAME__;
 
 const client = createClientHandler({
   getPath: (url) => resolvePath(__dirname, "../../../client", url),
@@ -19,8 +26,8 @@ const client = createClientHandler({
 
 const routing = createRoutingHandler({
   indexHtmlPath: resolvePath(__dirname, "../../../public/index.html"),
-  statsFile: resolvePath(process.cwd(), "./dist/client/services/core/loadable-stats.json"),
-  entryPoints: ["services/core/index"],
+  statsFile: resolvePath(process.cwd(), `./dist/client/services/${SERVICE_NAME}/loadable-stats.json`),
+  entryPoints: [`services/${SERVICE_NAME}/index`],
   App,
 });
 
@@ -38,6 +45,6 @@ const urlHandler = createUrlHandler({
 
 const server = createServer(urlHandler);
 
-server.listen(port, () => {
-  console.log("Server started");
+server.listen(SERVICE_PORT, () => {
+  console.log(`Server started on ${SERVICE_HREF}`);
 });

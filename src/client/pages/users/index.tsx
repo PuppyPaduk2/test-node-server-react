@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import { Route, Routes } from "react-router-dom";
-import { BasenameProvider, Link } from "../../../../../../libs/infra-app";
+import { BasenameProvider, Link } from "../../../libs/infra-app";
 
 export default memo(() => {
   return (

@@ -1,6 +1,6 @@
-import { createUrlHandler, PathHandler } from "../../../../libs/url-handler";
+import { createUrlHandler, PathHandler } from "../libs/url-handler";
 import { MenuItem } from "../common/services/main-menu";
-import { urlHandlers } from "../../../../libs/infra-app/server";
+import { urlHandlers } from "../libs/infra-app/server";
 
 export const notFound = urlHandlers.createNotFoundHandler();
 

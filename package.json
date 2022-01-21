@@ -4,6 +4,11 @@
   "description": "",
   "author": "",
   "license": "ISC",
+  "scripts": {
+    "build:dev": "webpack -c webpack.dev.js",
+    "start:dev": "webpack -c webpack.dev.js --watch",
+    "start": "npm run start:dev"
+  },
   "devDependencies": {
     "@babel/core": "^7.16.7",
     "@babel/plugin-proposal-class-properties": "^7.16.7",

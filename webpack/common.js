@@ -1,5 +1,5 @@
 const path = require("path");
-const { definePlugin } = require("./plugins");
+const { loadablePlugin } = require("./plugins");
 
 module.exports = () => ({
   mode: "production",
@@ -25,7 +25,7 @@ module.exports = () => ({
       },
     ],
   },
-  plugins: [],
+  plugins: [loadablePlugin()],
   optimization: {
     runtimeChunk: "single",
     moduleIds: "named",

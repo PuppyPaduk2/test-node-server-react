@@ -1,0 +1,16 @@
+html {
+  background-color: aquamarine;
+}
+
+.app {
+  background-color: black;
+  color: white;
+
+  &_content {
+    padding: 10px;
+  }
+
+  a {
+    color: aquamarine
+  }
+}

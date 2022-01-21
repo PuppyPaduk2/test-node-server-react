@@ -1,5 +1,5 @@
 const path = require("path");
-const { loadablePlugin } = require("./plugins");
+const { loadablePlugin, miniCssExtractPlugin } = require("./plugins");
 
 module.exports = () => ({
   mode: "production",
@@ -23,9 +23,34 @@ module.exports = () => ({
         },
         exclude: /node_modules/,
       },
+      {
+        test: /\.(sa|sc|c)ss$/i,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: "css-loader",
+            options: {
+              importLoaders: 1,
+              modules: {
+                exportLocalsConvention: "camelCase",
+                localIdentName: "[hash:base64:5]",
+              },
+            },
+          },
+          {
+            loader: "postcss-loader",
+            options: {
+              postcssOptions: {
+                ident: "postcss",
+              },
+            },
+          },
+          "sass-loader",
+        ],
+      },
     ],
   },
-  plugins: [loadablePlugin()],
+  plugins: [loadablePlugin(), miniCssExtractPlugin()],
   optimization: {
     runtimeChunk: "single",
     moduleIds: "named",

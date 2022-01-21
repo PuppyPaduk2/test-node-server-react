@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "noEmit": false,
+    "noImplicitAny": false,
+    "jsx": "react",
+    "strict": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "ES5",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "removeComments": true,
+    "keyofStringsOnly": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "lib": ["dom", "es2015", "esnext"],
+    "plugins": [
+      {
+        "name": "typescript-plugin-css-modules",
+      }
+    ]
+  },
+  "exclude": ["node_modules"]
+}

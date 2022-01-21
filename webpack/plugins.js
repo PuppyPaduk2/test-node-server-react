@@ -3,6 +3,7 @@ const LoadablePlugin = require("@loadable/webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
 const NodemonPlugin = require("nodemon-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   definePlugin: (options) => {
@@ -30,6 +31,11 @@ module.exports = {
       watch: `./dist/server`,
       ext: "js,njk,json,ts,tsx",
       ...options,
+    });
+  },
+  miniCssExtractPlugin: () => {
+    return new MiniCssExtractPlugin({
+      linkType: "text/css",
     });
   },
 };

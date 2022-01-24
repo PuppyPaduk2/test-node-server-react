@@ -1,7 +1,7 @@
 import { createServer } from "http";
 import { resolve as resolvePath } from "path";
-import { createUrlHandler } from "../libs/url-handler";
-import { urlHandlers } from "../libs/infra-app/server";
+import { createUrlHandler } from "libs/url-handler";
+import { urlHandlers } from "libs/infra-app/server";
 import { App } from "../client/app";
 import { api } from "./api";
 
@@ -22,7 +22,7 @@ const client = createClientHandler({
 });
 
 const routing = createRoutingHandler({
-  indexHtmlPath: resolvePath(__dirname, "../public/index.html"),
+  indexHtmlPath: resolvePath(__dirname, "../assets/index.html"),
   statsFile: resolvePath(process.cwd(), `./dist/client/loadable-stats.json`),
   entryPoints: ["index"],
   App,

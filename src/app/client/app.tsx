@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import loadable from '@loadable/component'
 import { Route, Routes } from "react-router-dom";
 import { MainMenuService } from "./services/main-menu";
-import { createApp, CommonRouter } from "../libs/infra-app";
+import { createApp, CommonRouter } from "libs/infra-app";
 import style from "./app.module.scss";
 
 const fallback = <div>...loading</div>;

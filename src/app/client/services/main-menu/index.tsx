@@ -1,6 +1,6 @@
 import React, { memo } from "react";
+import { useFetch, Link } from "libs/infra-app";
 import { request } from "../../utils/request";
-import { useFetch, Link } from "../../../libs/infra-app";
 import { MenuItem } from "../../../common/services/main-menu";
 
 const requestMenu = () => {

@@ -1,3 +1,5 @@
+const { resolve: resolvePath } = require("path");
+
 function getAppConstants(options = {}) {
   const { url, protocol, hostname, port } = options;
 
@@ -20,6 +22,12 @@ function getAppConstants(options = {}) {
   };
 }
 
+function resolvePathCwd(path) {
+  return resolvePath(process.cwd(), path);
+}
+
 module.exports = {
+  resolvePath,
   getAppConstants,
+  resolvePathCwd,
 };

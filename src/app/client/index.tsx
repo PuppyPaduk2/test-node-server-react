@@ -1,4 +1,4 @@
-import { attachClientApp } from "../libs/infra-app";
+import { attachClientApp } from "libs/infra-app";
 import { App } from "./app";
 
 attachClientApp({

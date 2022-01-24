@@ -6,16 +6,16 @@ const NodemonPlugin = require("nodemon-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-  definePlugin: (options) => {
+  getDefinePlugin: (options) => {
     return new DefinePlugin(options);
   },
-  loadablePlugin: (options) => {
+  getLoadablePlugin: (options) => {
     return new LoadablePlugin(options);
   },
-  copyPlugin: (options) => {
+  getCopyPlugin: (options) => {
     return new CopyPlugin(options);
   },
-  moduleFederation: (options) => {
+  getModuleFederationPlugin: (options) => {
     return new ModuleFederationPlugin({
       // name: "core",
       filename: "remote.js",
@@ -25,15 +25,13 @@ module.exports = {
       ...options,
     });
   },
-  nodemon: (options) => {
+  getNodemonPlugin: (options) => {
     return new NodemonPlugin({
-      script: `./dist/server/index.js`,
-      watch: `./dist/server`,
       ext: "js,njk,json,ts,tsx",
       ...options,
     });
   },
-  miniCssExtractPlugin: () => {
+  getMiniCssExtractPlugin: () => {
     return new MiniCssExtractPlugin({
       linkType: "text/css",
     });

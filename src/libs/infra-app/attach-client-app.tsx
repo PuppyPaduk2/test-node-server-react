@@ -6,7 +6,7 @@ import { App } from "./app";
 import { createInitialValuesContextValue } from "./initial-values-context";
 
 declare global {
-  interface Window { initialState: object; }
+  interface Window { initialState?: object; }
 }
 
 type Params = {
@@ -19,12 +19,14 @@ export function attachClientApp(params: Params) {
     const { selector: appSelector, App } = params;
   
     const root = document.querySelector(appSelector);
-    const initialValues = "initialState" in window ? window.initialState : {};
-  
+    const windowInitialValues = "initialState" in window ? window.initialState || {} : {};
+    const initialValues = createInitialValuesContextValue();
+
+    initialValues.deserialize(windowInitialValues);
     delete window.initialState;
     hydrate(
       <App
-        initialValues={createInitialValuesContextValue(initialValues)}
+        initialValues={initialValues}
         requests={createRequestContextValue()}
       />,
       root

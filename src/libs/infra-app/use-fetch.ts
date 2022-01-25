@@ -4,17 +4,17 @@ import { useStore } from "./use-store";
 
 type Request<Result> = () => Promise<Result>;
 
-export type UseFetchOptions<Result> = {
+export type UseFetchOptions = {
   key?: string;
-  defaultResult?: Result;
   isRequestMount?: boolean;
 };
 
 export function useFetch<Result>(
   request: Request<Result>,
-  options: UseFetchOptions<Result> = {}
+  defaultResult: Result,
+  options: UseFetchOptions = {}
 ): [Result, Request<Result>] {
-  const { key, defaultResult, isRequestMount } = options;
+  const { key, isRequestMount } = options;
   const requests = useContext(requestsContext);
   const [result, setResult] = useStore<Result>(defaultResult, { key });
   const requestWrapper: Request<Result> = useCallback(() => {

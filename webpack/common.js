@@ -1,7 +1,7 @@
 const { resolve: resolvePath } = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { getLoadablePlugin, getMiniCssExtractPlugin } = require("./plugins");
-const { resolvePathCwd } = require("./utils");
+const { resolveCwd, resolveDirname } = require("./utils");
 
 module.exports = () => ({
   mode: "production",
@@ -11,13 +11,10 @@ module.exports = () => ({
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
-    modules: [
-      resolvePathCwd("./node_modules"),
-      resolvePathCwd("../node_modules"),
-      resolvePathCwd("../../node_modules"),
-    ],
+    modules: [resolveDirname("../node_modules")],
     alias: {
-      libs: resolvePathCwd("./src/libs"),
+      libs: [resolveDirname("../src/libs")],
+      services: [resolveDirname("../src/services")],
     },
   },
   externals: {},
@@ -28,7 +25,7 @@ module.exports = () => ({
         use: {
           loader: "babel-loader",
           options: {
-            configFile: resolvePath(__dirname, "./babel.config.js"),
+            configFile: resolveDirname("./babel.config.js"),
           },
         },
         exclude: /node_modules/,

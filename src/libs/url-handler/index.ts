@@ -37,10 +37,10 @@ export function createUrlHandler(config: Config = {}) {
 
   return (req: IncomingMessage, res: ServerResponse) => {
     const { path, params } = _matchRoute(pathsInner, req);
-    const handler: PathHandler | null = path ? path[req.method.toLocaleLowerCase()] : null;
+    const handler: PathHandler | null = path ? path[req.method?.toLocaleLowerCase() ?? ""] : null;
 
     if (handler) {
-      handler(req, res, { params });
+      handler(req, res, { params: params ?? {} });
     } else {
       notFound(req, res, { params: {} });
     }

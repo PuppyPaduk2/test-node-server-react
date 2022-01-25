@@ -35,8 +35,7 @@ export async function renderApp(params: RenderAppParams): Promise<Readable> {
   await requests.promise;
 
   const renderStream = renderToNodeStream(collectChunks());
-  const initialValuesEntries = Object.fromEntries(Array.from(initialValues));
-  const initialValuesString = JSON.stringify(initialValuesEntries).replace(/</g, '\\u003c');
+  const initialValuesString = JSON.stringify(initialValues.serialize()).replace(/</g, '\\u003c');
 
   stream.push(beforeHead);
   stream.push(webExtractor.getStyleTags());

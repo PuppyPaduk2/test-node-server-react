@@ -22,12 +22,17 @@ function getAppConstants(options = {}) {
   };
 }
 
-function resolvePathCwd(path) {
+function resolveCwd(path = "") {
   return resolvePath(process.cwd(), path);
+}
+
+function resolveDirname(path = "") {
+  return resolvePath(__dirname, path);
 }
 
 module.exports = {
   resolvePath,
   getAppConstants,
-  resolvePathCwd,
+  resolveCwd,
+  resolveDirname,
 };

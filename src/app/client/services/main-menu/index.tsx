@@ -18,9 +18,8 @@ export const MainMenuService = memo(() => (
 ));
 
 const MenuItems = memo(() => {
-  const [menu] = useFetch(requestMenu, {
+  const [menu] = useFetch(requestMenu, [], {
     key: "main-menu",
-    defaultResult: [],
     isRequestMount: true,
   });
 

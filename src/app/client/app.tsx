@@ -1,9 +1,9 @@
-import React, { memo, useMemo } from "react";
-import loadable from '@loadable/component'
+import React, { memo } from "react";
+import loadable from "@loadable/component";
 import { Route, Routes as ReactRoutes } from "react-router-dom";
 import { NavigationEntry } from "services/navigation/types";
 import { MainMenuService } from "./services/main-menu";
-import { createApp, CommonRouter, useFetch } from "libs/infra-app";
+import { createApp, CommonRouter, useFetch, useRequestMount } from "libs/infra-app";
 import style from "./app.module.scss";
 import { request } from "./utils/request";
 
@@ -15,43 +15,36 @@ const SingInPage = loadable(() => import("./pages/sing-in"), { fallback });
 
 const UsersPage = loadable(() => import("./pages/users"), { fallback });
 
-const serviceMap = {
+const elementMap = {
   root: <HomePage />,
   signIn: <SingInPage />,
   users: <UsersPage />,
 };
 
 const requestNavigation = async () => {
-  const response = await request<NavigationEntry[]>({ url: "/api/navigation/list" });
-
-  return response.data;
-};
-
-const requestNavigationRoot = async () => {
   try {
-    const navigation = await requestNavigation();
+    const { data } = await request<NavigationEntry[]>({ url: "/api/navigation/list", params: { parent: "null" } });
 
-    return navigation.reduce<NavigationEntry[]>((memo, [key, item]) => {
-      if (item.parentKey === null) {
-        memo.push([key, item]);
-      }
-
-      return memo;
-    }, []);
+    return data;
   } catch {
     return [];
   }
 };
 
 const Routes = memo(() => {
-  const [navigation] = useFetch(requestNavigationRoot, [], {
-    key: "navigation",
-    isRequestMount: true,
-  });
+  const [navigation, getNavigation, navigationKey] = useFetch(requestNavigation, [], "navigation-app");
 
-  const routes = navigation.map(([key, { path }]) => (
-    <Route key={key} path={path} element={serviceMap[key]} />
-  ));
+  useRequestMount(getNavigation, navigationKey);
+
+  const routes = navigation.reduce<JSX.Element[]>((memo, [key, { path }]) => {
+    const element = elementMap[key];
+
+    if (element) {
+      memo.push(<Route key={key} path={path} element={element} />);
+    }
+
+    return memo;
+  }, []);
 
   return (
     <ReactRoutes>

@@ -3,17 +3,12 @@ import { initialValuesContext } from "./initial-values-context";
 import { useInitialValue } from "./use-initial-value";
 import { getSide } from "./get-side";
 
-type UseStoreOptions = {
-  key?: string;
-};
-
 const side = getSide();
 
 export function useStore<Value>(
   defaultValue: Value,
-  options:  UseStoreOptions = {}
+  key: string
 ): [Value, Dispatch<Value>] {
-  const { key } = options;
   const initialValues = useContext(initialValuesContext);
   const initialValue = useInitialValue<Value>((value) => value ?? defaultValue, key);
   const [value, setStateValue] = useState<Value>(initialValue);

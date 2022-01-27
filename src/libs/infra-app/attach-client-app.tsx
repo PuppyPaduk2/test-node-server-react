@@ -1,7 +1,7 @@
 import React from "react";
 import { loadableReady } from '@loadable/component';
 import { hydrate } from "react-dom";
-import { createRequestContextValue } from ".";
+import { createRequestContextValue } from "./requests-context";
 import { App } from "./app";
 import { createInitialValuesContextValue } from "./initial-values-context";
 

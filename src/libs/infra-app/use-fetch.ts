@@ -1,22 +1,20 @@
 import { useCallback, useContext } from "react";
-import { requestsContext, useRequestMount } from ".";
+import { requestsContext } from "./requests-context";
 import { useStore } from "./use-store";
 
 type Request<Result> = () => Promise<Result>;
 
 export type UseFetchOptions = {
   key?: string;
-  isRequestMount?: boolean;
 };
 
 export function useFetch<Result>(
   request: Request<Result>,
   defaultResult: Result,
-  options: UseFetchOptions = {}
-): [Result, Request<Result>] {
-  const { key, isRequestMount } = options;
+  key: string
+): [Result, Request<Result>, string] {
   const requests = useContext(requestsContext);
-  const [result, setResult] = useStore<Result>(defaultResult, { key });
+  const [result, setResult] = useStore<Result>(defaultResult, key);
   const requestWrapper: Request<Result> = useCallback(() => {
     return requests.add(request()).then((data) => {
       setResult(data);
@@ -25,9 +23,5 @@ export function useFetch<Result>(
     });
   }, [result]);
 
-  if (isRequestMount) {
-    useRequestMount(requestWrapper, key);
-  }
-
-  return [result, requestWrapper];
+  return [result, requestWrapper, key];
 }

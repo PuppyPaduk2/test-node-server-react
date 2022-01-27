@@ -6,7 +6,7 @@ type Request<Result> = () => Promise<Result>;
 
 const side = getSide();
 
-export function useRequestMount<Result>(request: Request<Result>, key?: string): void {
+export function useRequestMount<Result>(request: Request<Result>, key: string): void {
   const isEmptyValue = useInitialValue((value) => !value, key);
 
   if (side === "node") {

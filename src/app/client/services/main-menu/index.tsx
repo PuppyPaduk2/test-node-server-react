@@ -1,11 +1,12 @@
 import React, { memo } from "react";
-import { useFetch, Link } from "libs/infra-app";
+import { Link, useFetch, useRequestMount } from "libs/infra-app";
 import { request } from "../../utils/request";
-import { MenuItem } from "../../../common/services/main-menu";
+import { MenuEntry } from "services/navigation/types";
 
-const requestMenu = () => {
-  return request<MenuItem[]>({ url: "/api/menu"})
-    .then(({ data }) => data);
+const requestMainMenu = () => {
+  return request<MenuEntry[]>({ url: "/api/navigation/main-menu" })
+    .then(({ data }) => data)
+    .catch<MenuEntry[]>(() => []);
 };
 
 export const MainMenuService = memo(() => (
@@ -18,13 +19,12 @@ export const MainMenuService = memo(() => (
 ));
 
 const MenuItems = memo(() => {
-  const [menu] = useFetch(requestMenu, [], {
-    key: "main-menu",
-    isRequestMount: true,
-  });
+  const [menu, getMenu, menuKey] = useFetch(requestMainMenu, [], "main-menu");
 
-  const menuItems = menu.map(({ url, text }) => (
-    <Link key={url} to={url}>{text}</Link>
+  useRequestMount(getMenu, menuKey);
+
+  const menuItems = menu.map(([key, { path, title }]) => (
+    <Link key={key} to={path}>{title}</Link>
   ));
 
   return <>{menuItems}</>

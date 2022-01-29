@@ -6,6 +6,7 @@ import { MainMenuService } from "./services/main-menu";
 import { createApp, CommonRouter, useFetch, useRequestMount } from "libs/infra-app";
 import style from "./app.module.scss";
 import { request } from "./utils/request";
+import { createPreFetch } from "libs/pre-fetch";
 
 const fallback = <div>...loading</div>;
 
@@ -64,3 +65,39 @@ const Content = memo(() => (
 ));
 
 export const App = createApp(Content);
+
+export const preFetch = createPreFetch({
+  loaders: {
+    root: {
+      path: "(.*)",
+      defaultValue: {},
+      load: () => Promise.resolve({}),
+    },
+    signIn: {
+      path: "/sign-in",
+      defaultValue: {},
+      load: () => Promise.resolve({}),
+    },
+    users: {
+      path: "/users/(.*)",
+      defaultValue: [],
+      load: () => import("./pages/users")
+        .then(({ requestNavigationUsers }) => requestNavigationUsers()),
+    },
+    usersAll: {
+      path: "/users/all",
+      defaultValue: { users: [] },
+      load: () => Promise.reject({}),
+    },
+    user: {
+      path: "/users/user/:id",
+      defaultValue: {},
+      load: () => Promise.resolve({}),
+    },
+    rules: {
+      path: "",
+      defaultValue: {},
+      load: () => Promise.resolve({}),
+    },
+  },
+});

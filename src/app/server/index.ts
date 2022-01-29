@@ -2,7 +2,7 @@ import { createServer } from "http";
 import { resolve as resolvePath } from "path";
 import { createUrlHandler } from "libs/url-handler";
 import { urlHandlers } from "libs/infra-app/server";
-import { App } from "../client/app";
+import { App, preFetch } from "../client/app";
 import { api } from "./api";
 
 const {
@@ -35,7 +35,15 @@ const urlHandler = createUrlHandler({
     { url: "/favicon.ico", get: notFound },
     { url: "/client/(.*)", get: client },
     { url: "/api/(.*)", get: api },
-    { url: "(.*)", get: routing },
+    { url: "(.*)", get: (...args) => {
+      const [req] = args;
+
+      preFetch(req.url ?? "").then((data) => {
+        console.log(data);
+      });
+
+      return routing(...args);
+    } },
   ],
   notFound,
 });

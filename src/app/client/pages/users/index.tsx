@@ -4,7 +4,7 @@ import { useFetch, useRequestMount } from "libs/infra-app";
 import { request } from "../../utils/request";
 import { NavigationEntry } from "services/navigation/types";
 
-const requestNavigationUsers = async () => {
+export const requestNavigationUsers = async () => {
   try {
     const { data } = await request<NavigationEntry[]>({ 
       url: "/api/navigation/list",

@@ -1,8 +1,6 @@
 import { request } from "http";
 import { createUrlHandler, PathHandler } from "libs/url-handler";
-import { urlHandlers } from "libs/infra-app/server";
-
-export const notFound = urlHandlers.createNotFoundHandler();
+import { notFound } from "./not-found";
 
 export const api: PathHandler = createUrlHandler({
   paths: [

@@ -5,6 +5,10 @@ import { App, preFetchApp } from "./app";
 import { BrowserRouter } from "react-router-dom";
 import { initialStateKey } from "../common/constants";
 
+declare global {
+  interface Window { initialState?: object; }
+}
+
 const rootSelector = "#root";
 
 const ClearInitialState = memo((props) => {

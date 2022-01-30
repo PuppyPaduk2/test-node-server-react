@@ -1,7 +1,6 @@
 import { createServer } from "http";
 import { parse as parseQuery } from "query-string";
-import { createUrlHandler } from "libs/url-handler";
-import { urlHandlers } from "libs/infra-app/server";
+import { createUrlHandler, PathHandler } from "libs/url-handler";
 import { MenuEntry, MenuEntryItem, MenuItem, Navigation, NavigationEntry, NavigationEntryItem, NavigationItem } from "../types";
 
 declare const __APP_HREF__: string;
@@ -63,6 +62,14 @@ const mainMenuEntries = mainMenuItem.reduce<MenuEntry[]>((memo, item) => {
   return memo;
 }, []);
 
+export const notFound: PathHandler = (_, res) => {
+  res.writeHead(404, {
+    "Cache-Control": "public, max-age=31536000",
+    "Content-Type": "text/html",
+  });
+  res.end("Not found");
+};
+
 const urlHandler = createUrlHandler({
   paths: [
     {
@@ -91,7 +98,7 @@ const urlHandler = createUrlHandler({
       },
     }
   ],
-  notFound: urlHandlers.createNotFoundHandler(),
+  notFound,
 });
 
 const server = createServer(urlHandler);

@@ -1,103 +1,34 @@
-import React, { memo } from "react";
-import loadable from "@loadable/component";
-import { Route, Routes as ReactRoutes } from "react-router-dom";
-import { NavigationEntry } from "services/navigation/types";
-import { MainMenuService } from "./services/main-menu";
-import { createApp, CommonRouter, useFetch, useRequestMount } from "libs/infra-app";
-import style from "./app.module.scss";
-import { request } from "./utils/request";
 import { createPreFetch } from "libs/pre-fetch";
+import React, { memo, useContext, useState } from "react";
 
-const fallback = <div>...loading</div>;
+export const preFetchApp = createPreFetch({
+  loaders: {
+    app: {
+      path: "(.*)",
+      defaultValue: { text: "App default value" },
+      load: () => Promise.resolve({ text: "App" }),
+    },
+  },
+});
 
-const HomePage = loadable(() => import("./pages/home"), { fallback });
-
-const SingInPage = loadable(() => import("./pages/sing-in"), { fallback });
-
-const UsersPage = loadable(() => import("./pages/users"), { fallback });
-
-const elementMap = {
-  root: <HomePage />,
-  signIn: <SingInPage />,
-  users: <UsersPage />,
-};
-
-const requestNavigation = async () => {
-  try {
-    const { data } = await request<NavigationEntry[]>({ url: "/api/navigation/list", params: { parent: "null" } });
-
-    return data;
-  } catch {
-    return [];
-  }
-};
-
-const Routes = memo(() => {
-  const [navigation, getNavigation, navigationKey] = useFetch(requestNavigation, [], "navigation-app");
-
-  useRequestMount(getNavigation, navigationKey);
-
-  const routes = navigation.reduce<JSX.Element[]>((memo, [key, { path }]) => {
-    const element = elementMap[key];
-
-    if (element) {
-      memo.push(<Route key={key} path={path} element={element} />);
-    }
-
-    return memo;
-  }, []);
+const Content = memo(() => {
+  const { app } = useContext(preFetchApp.context);
+  const [text, setText] = useState(app?.text ?? "");
 
   return (
-    <ReactRoutes>
-      {routes}
-      <Route path="*" element={<>Not Found</>} />
-    </ReactRoutes>
+    <>
+      <div>{text}</div>
+      <div>
+        <button onClick={() => setText(prev => prev + "x")}>Change</button>
+      </div>
+    </>
   );
 });
 
-const Content = memo(() => (
-  <div className={style.app}>
-    <CommonRouter>
-      <MainMenuService />
-      <Routes />
-    </CommonRouter>
-  </div>
-));
-
-export const App = createApp(Content);
-
-export const preFetch = createPreFetch({
-  loaders: {
-    root: {
-      path: "(.*)",
-      defaultValue: {},
-      load: () => Promise.resolve({}),
-    },
-    signIn: {
-      path: "/sign-in",
-      defaultValue: {},
-      load: () => Promise.resolve({}),
-    },
-    users: {
-      path: "/users/(.*)",
-      defaultValue: [],
-      load: () => import("./pages/users")
-        .then(({ requestNavigationUsers }) => requestNavigationUsers()),
-    },
-    usersAll: {
-      path: "/users/all",
-      defaultValue: { users: [] },
-      load: () => Promise.reject({}),
-    },
-    user: {
-      path: "/users/user/:id",
-      defaultValue: {},
-      load: () => Promise.resolve({}),
-    },
-    rules: {
-      path: "",
-      defaultValue: {},
-      load: () => Promise.resolve({}),
-    },
-  },
+export const App = memo(() => {
+  return (
+    <div>
+      <Content />
+    </div>
+  );
 });

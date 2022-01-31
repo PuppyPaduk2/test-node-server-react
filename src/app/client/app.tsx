@@ -6,7 +6,7 @@ export const preFetchApp = createPreFetch({
     app: {
       path: "(.*)",
       defaultValue: { text: "App default value" },
-      load: () => Promise.resolve({ text: "App" }),
+      load: () => import("./root").then(({ getState }) => getState()),
     },
   },
 });

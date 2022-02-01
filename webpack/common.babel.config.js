@@ -1,4 +1,4 @@
-module.exports = {
+module.exports = () => ({
   presets: [
     ["@babel/preset-typescript"],
     ["@babel/preset-react"],
@@ -14,4 +14,4 @@ module.exports = {
     ["@babel/plugin-syntax-dynamic-import"],
     ["@loadable/babel-plugin"],
   ],
-};
+});

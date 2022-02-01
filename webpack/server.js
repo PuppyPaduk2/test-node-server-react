@@ -12,5 +12,5 @@ module.exports = () => {
   );
   config.output.path = resolveCwd("./dist/server");
 
-  return config;
+  return [config];
 };

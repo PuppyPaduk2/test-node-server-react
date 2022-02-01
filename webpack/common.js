@@ -1,7 +1,7 @@
 const { resolve: resolvePath } = require("path");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const { getLoadablePlugin, getMiniCssExtractPlugin } = require("./plugins");
+const { getMiniCssExtractPlugin } = require("./plugins");
 const { resolveCwd, resolveDirname } = require("./utils");
+const { getTsJsRule, getCssSassRule } = require("./module-rules");
 
 module.exports = () => ({
   mode: "production",
@@ -19,51 +19,15 @@ module.exports = () => ({
   },
   externals: {},
   module: {
-    rules: [
-      {
-        test: /\.(ts|tsx|js|jsx)?$/,
-        use: {
-          loader: "babel-loader",
-          options: {
-            configFile: resolveDirname("./babel.config.js"),
-          },
-        },
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.(sa|sc|c)ss$/i,
-        use: [
-          MiniCssExtractPlugin.loader,
-          {
-            loader: "css-loader",
-            options: {
-              importLoaders: 1,
-              modules: {
-                exportLocalsConvention: "camelCase",
-                localIdentName: "[hash:base64:5]",
-              },
-            },
-          },
-          {
-            loader: "postcss-loader",
-            options: {
-              postcssOptions: {
-                ident: "postcss",
-              },
-            },
-          },
-          "sass-loader",
-        ],
-      },
-    ],
+    rules: [getTsJsRule(), getCssSassRule()],
   },
-  plugins: [getLoadablePlugin(), getMiniCssExtractPlugin()],
+  plugins: [getMiniCssExtractPlugin()],
   optimization: {
-    runtimeChunk: "single",
-    moduleIds: "named",
-    chunkIds: "named",
-    splitChunks: {
-      chunks: "all",
-    },
+    // runtimeChunk: "single",
+    // moduleIds: "named",
+    // chunkIds: "named",
+    // splitChunks: {
+    //   chunks: "all",
+    // },
   },
 });

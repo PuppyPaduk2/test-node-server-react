@@ -3,11 +3,12 @@ const { getAppConstants } = require("./utils");
 const { getDefinePlugin } = require("./plugins");
 
 module.exports = (options = {}) => {
-  const config = getClientConfig();
+  const [configWeb, configNode] = getClientConfig();
   const appConstants = getAppConstants(options);
   const definePlugin = getDefinePlugin(appConstants);
 
-  config.plugins.push(definePlugin);
+  configWeb.plugins.push(definePlugin);
+  configNode.plugins.push(definePlugin);
 
-  return config;
+  return [configWeb, configNode];
 };

@@ -6,6 +6,7 @@ import { Readable } from "stream";
 import { PathHandler } from "libs/url-handler";
 import { App, preFetchComponents, preFetchData } from "../client/app";
 import { renderToString } from "react-dom/server";
+import { StaticRouter } from "react-router-dom/server";
 
 const indexHtmlPath = resolvePath(__dirname, "../public/index.html");
 const html = readFileSync(indexHtmlPath).toString();
@@ -31,7 +32,9 @@ const renderApp = async (params: {
   const html = renderToString(
     <preFetchData.context.Provider value={data}>
       <preFetchComponents.context.Provider value={components}>
-        <App />
+        <StaticRouter location={location}>
+          <App />
+        </StaticRouter>
       </preFetchComponents.context.Provider>
     </preFetchData.context.Provider>
   );

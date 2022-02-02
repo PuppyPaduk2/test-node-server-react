@@ -1,5 +1,5 @@
 import { createPreFetch } from "libs/pre-fetch";
-import React, { memo, useContext, useState } from "react";
+import React, { memo, useContext, useEffect, useState } from "react";
 import { request } from "./utils/request";
 
 console.log("Module (users) loaded");
@@ -23,6 +23,12 @@ const Content = memo(() => {
 
   console.log("Users context data:", data);
 
+  useEffect(() => {
+    if (users.length === 0) {
+      requestUsers().then(setUsers);
+    }
+  }, []);
+
   return (
     <div>
       <h2>Users</h2>
@@ -36,6 +42,14 @@ const Content = memo(() => {
 });
 
 export const Users = memo<typeof preFetchUsersData.defaultData>((props) => {
+  useEffect(() => {
+    console.log("Users mounted");
+
+    return () => {
+      console.log("Users unmounted");
+    };
+  }, []);
+
   return (
     <preFetchUsersData.context.Provider value={{ ...props }}>
       <preFetchUsersData.ClearData>

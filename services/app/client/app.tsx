@@ -1,5 +1,6 @@
-import React, { memo, useContext, useState } from "react";
+import React, { FC, memo, useContext, useEffect, useState } from "react";
 import { createPreFetch } from "libs/pre-fetch";
+import { Link, Route, Routes, useLocation } from "react-router-dom";
 
 export const preFetchData = createPreFetch({
   app: {
@@ -42,15 +43,34 @@ const Change = () => {
   );
 };
 
-const Content = memo(() => {
-  const { Rules, Users } = useContext(preFetchComponents.context);
+const Menu = memo(() => {
+  return (
+    <div>
+      <Link to="/">Home</Link>
+      <Link to="/users">Users</Link>
+      <Link to="/users/all">Users all</Link>
+    </div>
+  )
+});
+
+const Users = memo(() => {
+  const location = useLocation();
   const { usersData } = useContext(preFetchData.context);
+  const Component = preFetchComponents.usePreFetch("Users", location.pathname);
+
+  return <Component {...usersData} />;
+});
+
+const Content = memo(() => {
+  const { Rules } = useContext(preFetchComponents.context);
 
   return (
     <>
       <Change />
       <Rules />
-      <Users {...usersData} />
+      <Routes>
+        <Route path="/users/*" element={<Users />} />
+      </Routes>
     </>
   );
 });
@@ -59,6 +79,7 @@ export const App = memo(() => {
   return (
     <div>
       <h1>Application</h1>
+      <Menu />
       <Content />
     </div>
   );

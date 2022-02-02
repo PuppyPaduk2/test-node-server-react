@@ -1,10 +1,12 @@
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const getCommonBabelConfig = require("./common.babel.config");
+const { resolveDirname } = require("./utils");
 
 module.exports = {
   getBabelLoader: (settings = {}) => ({
     loader: "babel-loader",
-    options: getCommonBabelConfig(),
+    options: {
+      configFile: resolveDirname("./babel.config.js"),
+    },
     ...settings,
   }),
   getMiniCssExtractLoader: () => MiniCssExtractPlugin.loader,

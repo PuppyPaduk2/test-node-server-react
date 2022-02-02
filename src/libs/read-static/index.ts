@@ -3,8 +3,14 @@ import { createReadStream, existsSync } from "fs";
 
 const cache: Record<string, (Buffer | string)[]> = {};
 
-export function readStatic(path: string): Readable | null {
-  if (cache[path]) {
+type Options = {
+  useCache?: boolean;
+};
+
+export function readStatic(path: string, options: Options = {}): Readable | null {
+  const useCache = options.useCache ?? true;
+
+  if (cache[path] && useCache) {
     return new Readable({
       read() {
         cache[path].forEach((chunk) => this.push(chunk));
@@ -14,8 +20,10 @@ export function readStatic(path: string): Readable | null {
   } else if (existsSync(path)) {
     const stream = createReadStream(path);
 
-    cache[path] = [];
-    stream.on("data", (chunk) => cache[path].push(chunk));
+    if (useCache) {
+      cache[path] = [];
+      stream.on("data", (chunk) => cache[path].push(chunk));
+    }
 
     return stream;
   } else {

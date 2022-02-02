@@ -3,7 +3,7 @@ const { getAppConstants } = require("./utils");
 const { getDefinePlugin } = require("./plugins");
 
 module.exports = (options = {}) => {
-  const [config] = getServerConfig();
+  const config = getServerConfig();
   const appConstants = getAppConstants(options);
   const definePlugin = getDefinePlugin(appConstants);
 

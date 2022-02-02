@@ -23,11 +23,11 @@ module.exports = () => ({
   },
   plugins: [getMiniCssExtractPlugin()],
   optimization: {
-    // runtimeChunk: "single",
-    // moduleIds: "named",
-    // chunkIds: "named",
-    // splitChunks: {
-    //   chunks: "all",
-    // },
+    runtimeChunk: "single",
+    moduleIds: "named",
+    chunkIds: "named",
+    splitChunks: {
+      chunks: "all",
+    },
   },
 });

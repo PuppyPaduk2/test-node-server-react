@@ -1,10 +1,7 @@
 import { createServer } from "http";
 import { createUrlHandler } from "libs/url-handler";
-import { api } from "./api";
-import { render } from "./render";
 import { notFound } from "./not-found";
 import { client } from "./client";
-import { remotes } from "./remotes";
 
 declare const __APP_HREF__: string;
 const APP_HREF: string = __APP_HREF__;
@@ -16,9 +13,6 @@ const urlHandler = createUrlHandler({
   paths: [
     { url: "/favicon.ico", get: notFound },
     { url: "/client/(.*)", get: client },
-    { url: "/api/(.*)", get: api },
-    { url: "/remotes/auth/(.*)", get: remotes },
-    { url: "(.*)", get: render },
   ],
   notFound,
 });

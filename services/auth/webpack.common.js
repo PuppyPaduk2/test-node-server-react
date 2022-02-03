@@ -1,33 +1,27 @@
 const getAppClientConfig = require("../../webpack/app.client");
 const getAppServerConfig = require("../../webpack/app.server");
 const {
-  getCopyPlugin,
   getNodemonPlugin,
   getModuleFederationPlugin,
 } = require("../../webpack/plugins");
-const { resolveCwd } = require("../../webpack/utils");
 
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 
 const getClientConfig = (options = {}) => {
   const [config] = getAppClientConfig(options);
-  const html = new HTMLWebpackPlugin({
-    template: resolveCwd("./public/index.html"),
-    filename: resolveCwd("./dist/public/index.html"),
-    minify: false,
-  });
   const moduleFederation = getModuleFederationPlugin({
-    name: "app",
+    name: "auth",
     shared: {
       react: { singleton: true },
       "react-rom": { singleton: true },
     },
-    remotes: {
-      auth: "auth@/remotes/auth/client/remote.js",
+    exposes: {
+      "./App": "./exposes/app.ts",
     },
   });
 
-  config.plugins.push(html, moduleFederation);
+  config.output.publicPath = "/remotes/auth/client/";
+  config.plugins.push(moduleFederation);
 
   return [config];
 };
@@ -38,14 +32,8 @@ const getServerConfig = (options = {}) => {
     script: `./dist/server/index.js`,
     watch: `./dist`,
   });
-  const moduleFederation = getModuleFederationPlugin({
-    name: "app",
-    remotes: {
-      auth: "auth@/remotes/auth/client/remote.js",
-    },
-  });
 
-  config.plugins.push(nodemonPlugin, moduleFederation);
+  config.plugins.push(nodemonPlugin);
 
   return [config];
 };

@@ -1,4 +1,4 @@
-import React, { FC, memo, useContext, useEffect, useState } from "react";
+import React, { memo, useContext, useEffect, useState } from "react";
 import { createPreFetch } from "libs/pre-fetch";
 import { Link, Route, Routes, useLocation } from "react-router-dom";
 
@@ -10,7 +10,7 @@ export const preFetchData = createPreFetch({
   },
   usersData: {
     path: "/users*",
-    defaultValue: { users: [] },
+    defaultValue: { users: [], auth: {} },
     load: ({ location }) => import("./users")
       .then(({ preFetchUsersData }) => preFetchUsersData(location)),
   },

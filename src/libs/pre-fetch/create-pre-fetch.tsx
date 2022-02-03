@@ -67,6 +67,8 @@ export function createPreFetch<Data extends object>(loaders: Loaders<Data>): Pre
     const { load } = loaders[key];
     const value = await load({ location });
 
+    console.log(key)
+
     preFetch.loaded[key] = true;
 
     return value;
